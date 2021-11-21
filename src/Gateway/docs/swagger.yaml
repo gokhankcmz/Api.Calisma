@@ -1,0 +1,344 @@
+definitions:
+  Entities.Address:
+    properties:
+      addressline:
+        type: string
+      city:
+        type: string
+      citycode:
+        type: integer
+      country:
+        type: string
+    required:
+    - addressline
+    - city
+    - citycode
+    - country
+    type: object
+  Entities.Customer:
+    properties:
+      _id:
+        type: string
+      address:
+        $ref: '#/definitions/Entities.Address'
+      createdat:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      updatedat:
+        type: string
+      valid:
+        type: boolean
+    type: object
+  Entities.Product:
+    properties:
+      imageurl:
+        type: string
+      name:
+        type: string
+      productid:
+        type: string
+    required:
+    - imageurl
+    - name
+    - productid
+    type: object
+  RequestModels.CreateCustomerDto:
+    properties:
+      address:
+        $ref: '#/definitions/Entities.Address'
+      email:
+        type: string
+      name:
+        type: string
+    required:
+    - address
+    - email
+    - name
+    type: object
+  RequestModels.TokenCredentials:
+    properties:
+      Email:
+        type: string
+      id:
+        type: string
+    required:
+    - Email
+    - id
+    type: object
+info:
+  contact: {}
+  description: OrderCase Gateway Documentation.
+  title: Gateway
+  version: "1.0"
+paths:
+  /customers:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Detailed Fields
+        in: query
+        name: fields
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Get All Customer .
+      tags:
+      - Customers
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Customer to create.
+        in: body
+        name: Customer
+        required: true
+        schema:
+          $ref: '#/definitions/RequestModels.CreateCustomerDto'
+      produces:
+      - application/json
+      summary: Get all Customers.
+      tags:
+      - Customers
+  /customers/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Delete a Customer.
+      tags:
+      - Customers
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: Detailed Fields
+        in: query
+        name: detail
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Entities.Customer'
+      summary: Get a Customer.
+      tags:
+      - Customers
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Updates a Customer.
+      tags:
+      - Customers
+  /customers/{id}/address:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Entities.Address'
+      summary: Get Customer address.
+      tags:
+      - Customers
+  /orders:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Detailed Fields
+        in: query
+        name: fields
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Get All Orders.
+      tags:
+      - Orders
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Create an Order.
+      tags:
+      - Orders
+  /orders/:id/product:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Token
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Entities.Product'
+      summary: Get Order Product.
+      tags:
+      - Orders
+  /orders/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Delete an Order.
+      tags:
+      - Orders
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      - description: Detailed Fields
+        in: query
+        name: detail
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Entities.Product'
+      summary: Get an Order .
+      tags:
+      - Orders
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Get Order Product.
+      tags:
+      - Orders
+  /token:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Customer Credentials.
+        in: body
+        name: Customer
+        required: true
+        schema:
+          $ref: '#/definitions/RequestModels.TokenCredentials'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Create a JWT Token.
+      tags:
+      - Token
+swagger: "2.0"

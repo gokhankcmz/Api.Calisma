@@ -6,7 +6,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func CreateToken(ctx echo.Context) error{
-	return Redirection.Redirect(ctx,Constants.CustomerServiceUri)
+// CreateToken godoc
+// @Summary Create a JWT Token.
+// @Accept  json
+// @Produce  json
+// @Param Customer body RequestModels.TokenCredentials true "Customer Credentials."
+// @Router /token [post]
+// @Tags Token
+// @Success 200
+func CreateToken(ctx echo.Context) error {
+	return Redirection.Redirect(ctx, Constants.CustomerServiceUri)
 }
-

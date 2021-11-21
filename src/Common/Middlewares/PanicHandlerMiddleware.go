@@ -1,8 +1,8 @@
 package Middlewares
 
 import (
-	"Api.Calisma/src/Common/Models/ErrorModels"
 	"Api.Calisma/src/Common/Logger"
+	"Api.Calisma/src/Common/Models/ErrorModels"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -32,6 +32,6 @@ func PanicHandlerMiddleware(applicationName string) echo.MiddlewareFunc {
 	}
 }
 
-func UsePanicHandlerMiddleware(e *echo.Echo, applicationName string ){
+func UsePanicHandlerMiddleware(e *echo.Echo, applicationName string) {
 	e.Use(PanicHandlerMiddleware(applicationName))
 }
