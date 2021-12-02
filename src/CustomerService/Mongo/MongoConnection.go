@@ -1,4 +1,4 @@
-package CustomerRepository
+package Mongo
 
 import (
 	"Api.Calisma/src/CustomerService/Constants"
@@ -12,18 +12,15 @@ import (
 
 var once sync.Once
 
-// type global
-
-var MongoCollection *mongo.Collection
+var Collection *mongo.Collection
 
 func GetMongoSingletonCollection() *mongo.Collection {
 	once.Do(func() {
 		collection, _ := GetMongoDbCollection(Constants.DBName, Constants.CollectionName)
-		MongoCollection = collection
+		Collection = collection
 	})
-	return MongoCollection
+	return Collection
 }
-
 
 func GetMongoDbConnection() (*mongo.Client, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), Constants.MongoConnectionDuration)

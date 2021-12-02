@@ -1,4 +1,4 @@
-package Controllers
+package Handlers
 
 import (
 	"Api.Calisma/src/Gateway/Constants"

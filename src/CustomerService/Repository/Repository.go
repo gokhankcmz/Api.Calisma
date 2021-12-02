@@ -9,73 +9,86 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"time"
 )
 
+//TODO: SOYUTLA
+// TODO: ECHO BIND ARASTIR
 
+type IRepository interface {
+	GetCustomer(ID string) EntityModels.Customer
+	GetAllCustomerIds() ([]string, int)
+	GetAllCustomers() ([]EntityModels.Customer, int)
+	CreateCustomer(c *EntityModels.Customer) string
+	UpdateCustomer(c *EntityModels.Customer) *mongo.UpdateResult
+	DeleteCustomer(ID string) *mongo.DeleteResult
+	CheckCustomerIfExist(tc *RequestModels.TokenCredentials)
+}
 
-func GetCustomer(ID string) []byte {
-	collection := GetMongoSingletonCollection()
+type Repository struct {
+	mc *mongo.Collection
+}
+
+func NewRepository(mc *mongo.Collection) *Repository {
+	return &Repository{mc: mc}
+}
+
+func (r Repository) GetCustomer(ID string) EntityModels.Customer {
 	objID, err := primitive.ObjectIDFromHex(ID)
 	filter := bson.M{"_id": objID}
-	var result bson.M
-	if err = collection.FindOne(context.Background(), filter).Decode(&result); err != nil {
+	var result EntityModels.Customer
+	if err = r.mc.FindOne(context.Background(), filter).Decode(&result); err != nil {
 		if err == mongo.ErrNoDocuments {
 			panic(ErrorModels.EntityNotFound.SetArgs(ID))
 		}
 	}
-	response, _ := json.Marshal(result)
-	return response
+	return result
 }
 
-func GetAllCustomerIds() []byte {
-	collection := GetMongoSingletonCollection()
+func (r Repository) GetAllCustomerIds() ([]string, int) {
 	filter := bson.D{{}}
-	res, _ := collection.Distinct(context.Background(),"_id", filter)
+	res, _ := r.mc.Distinct(context.Background(), "_id", filter)
 	response, _ := json.Marshal(res)
-	return response
-}
-func GetAllCustomers() []byte{
+	var resp []string
+	json.Unmarshal(response, &resp)
+	return resp, len(resp)
 
-	collection := GetMongoSingletonCollection()
+}
+func (r Repository) GetAllCustomers() ([]EntityModels.Customer, int) {
 	filter := bson.D{{}}
-	var results []bson.M
-	cur, _ := collection.Find(context.Background(), filter)
+	var results []EntityModels.Customer
+	cur, _ := r.mc.Find(context.Background(), filter)
 	defer cur.Close(context.Background())
 	cur.All(context.Background(), &results)
-	response, _ := json.Marshal(results)
-	return response
+	return results, len(results)
 }
 
-func CreateCustomer(c *EntityModels.Customer) []byte {
-	collection := GetMongoSingletonCollection()
-	res, _ := collection.InsertOne(context.Background(), c)
-	response, _ := json.Marshal(res)
-	return response
+func (r Repository) CreateCustomer(c *EntityModels.Customer) string {
+	c.CreatedAt = time.Now()
+	c.UpdatedAt = time.Now()
+	res, _ := r.mc.InsertOne(context.Background(), c)
+	return res.InsertedID.(primitive.ObjectID).Hex()
 }
 
-func UpdateCustomer(c *EntityModels.Customer) []byte {
-	collection := GetMongoSingletonCollection()
+func (r Repository) UpdateCustomer(c *EntityModels.Customer) *mongo.UpdateResult {
+	c.UpdatedAt = time.Now()
 	filter := bson.M{"_id": c.ID}
-	res, _ := collection.ReplaceOne(context.Background(), filter, c)
-	response, _ := json.Marshal(res)
-	return response
+	res, _ := r.mc.ReplaceOne(context.Background(), filter, c)
+	return res
 }
 
-func DeleteCustomer(ID string) []byte {
-	collection := GetMongoSingletonCollection()
+func (r Repository) DeleteCustomer(ID string) *mongo.DeleteResult {
 	objID, _ := primitive.ObjectIDFromHex(ID)
 	filter := bson.M{"_id": objID}
-	res, _ := collection.DeleteOne(context.Background(), filter )
-	response, _ := json.Marshal(res)
-	return response
+	res, _ := r.mc.DeleteOne(context.Background(), filter)
+	return res
 }
 
-func CheckCustomerIfExist(tc *RequestModels.TokenCredentials){
-	collection := GetMongoSingletonCollection()
+func (r Repository) CheckCustomerIfExist(tc *RequestModels.TokenCredentials) {
 	objID, err := primitive.ObjectIDFromHex(tc.ID)
 	filter := bson.M{"_id": objID, "email": tc.Email}
 	var result bson.M
-	if err = collection.FindOne(context.Background(), filter).Decode(&result); err != nil {
+	if err = r.mc.FindOne(context.Background(), filter).Decode(&result); err != nil {
 		if err == mongo.ErrNoDocuments {
 			panic(ErrorModels.InvalidCredentials.SetPublicDetail("Wrong e-mail or id."))
 		}

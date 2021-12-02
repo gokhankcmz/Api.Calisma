@@ -11,19 +11,17 @@ import (
 )
 
 type CustomClaims struct {
-	ID  	string	 `json:"ID"`
-	Email	string   `json:"email"`
+	ID    string `json:"ID"`
+	Email string `json:"email"`
 	jwt.StandardClaims
 }
 
-
-func CreateToken(tc *RequestModels.TokenCredentials) string{
+func CreateToken(tc *RequestModels.TokenCredentials) string {
 	claims := CustomClaims{
-		ID:             tc.ID,
-		Email:          tc.Email,
+		ID:    tc.ID,
+		Email: tc.Email,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt:  time.Now().Add(Constants.JWTExpTime).Unix(),
-
+			ExpiresAt: time.Now().Add(Constants.JWTExpTime).Unix(),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims)
@@ -34,20 +32,20 @@ func CreateToken(tc *RequestModels.TokenCredentials) string{
 	return t
 }
 
-func ValidateToken(tokenString string) CustomClaims {
-	tokenString = strings.Replace(tokenString,"Bearer ", "",1)
+func ValidateAndGetClaims(tokenString string) CustomClaims {
+	tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
 	var claims CustomClaims
 	_, err := jwt.ParseWithClaims(tokenString, &claims, func(t *jwt.Token) (interface{}, error) {
 		return []byte(Constants.JWTSecretKey), nil
 	})
 
-	if err!= nil {
-		if err.Error() == "signature is invalid"{
+	if err != nil {
+		if err.Error() == "signature is invalid" {
 			panic(ErrorModels.InvalidToken.SetPublicDetail("Invalid Signature."))
 		}
 	}
 
-	if claims.ExpiresAt < time.Now().Unix(){
+	if claims.ExpiresAt < time.Now().Unix() {
 		panic(ErrorModels.InvalidToken.SetPublicDetail("Token Expired."))
 	}
 	return claims

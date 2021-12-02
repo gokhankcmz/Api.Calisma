@@ -5,12 +5,11 @@ import (
 	"Api.Calisma/src/Common/Models/RequestModels"
 )
 
-func CreateCustomerDtoToCustomer(CustomerDTO RequestModels.CreateCustomerDto) Entities.Customer {
+func CreateCustomerFromDto(CustomerDTO *RequestModels.CreateCustomerDto) Entities.Customer {
 	return Entities.Customer{
-		Address:  CustomerDTO.Address,
-		Name:     CustomerDTO.Name,
-		Email:    CustomerDTO.Email,
-		Valid:    false,
-
+		Address: CustomerDTO.Address,
+		Name:    CustomerDTO.Name,
+		Email:   CustomerDTO.Email,
+		Valid:   false,
 	}
 }

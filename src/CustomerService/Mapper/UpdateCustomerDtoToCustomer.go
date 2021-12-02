@@ -15,24 +15,24 @@ func UpdateCustomerDtoToCustomer(CustomerDTO RequestModels.UpdateCustomerDto) En
 	}
 }
 
-func AppylChangesToCustomer(UpdateDTO RequestModels.UpdateCustomerDto, customerEntity *Entities.Customer){
+func ApplyChangesToCustomer(UpdateDTO *RequestModels.UpdateCustomerDto, customerEntity *Entities.Customer) {
 
-	if UpdateDTO.Address.AddressLine != ""{
+	if UpdateDTO.Address.AddressLine != "" {
 		customerEntity.Address.AddressLine = UpdateDTO.Address.AddressLine
 	}
-	if UpdateDTO.Address.City != ""{
+	if UpdateDTO.Address.City != "" {
 		customerEntity.Address.City = UpdateDTO.Address.City
 	}
-	if UpdateDTO.Address.Country!= ""{
+	if UpdateDTO.Address.Country != "" {
 		customerEntity.Address.Country = UpdateDTO.Address.Country
 	}
-	if UpdateDTO.Address.CityCode != 0{
+	if UpdateDTO.Address.CityCode != 0 {
 		customerEntity.Address.CityCode = UpdateDTO.Address.CityCode
 	}
-	if UpdateDTO.Name != ""{
+	if UpdateDTO.Name != "" {
 		customerEntity.Name = UpdateDTO.Name
 	}
-	if UpdateDTO.Email != ""{
+	if UpdateDTO.Email != "" {
 		customerEntity.Email = UpdateDTO.Email
 	}
 }

@@ -1,8 +1,6 @@
-package Controllers
+package Handlers
 
 import (
-	"Api.Calisma/src/Common/Models/ErrorModels"
-	"Api.Calisma/src/Common/Token"
 	"Api.Calisma/src/Gateway/Constants"
 	"Api.Calisma/src/Gateway/Redirection"
 	"github.com/labstack/echo/v4"
@@ -21,12 +19,13 @@ func GetAllCustomers(ctx echo.Context) error {
 }
 
 // CreateCustomer godoc
-// @Summary Get all Customers.
+// @Summary Create Customer
 // @Accept  json
 // @Produce  json
 // @Param Customer body RequestModels.CreateCustomerDto true "Customer to create."
 // @Router /customers [post]
 // @Tags Customers
+// @Success 201
 func CreateCustomer(ctx echo.Context) error {
 	return Redirection.Redirect(ctx, Constants.CustomerServiceUri)
 }
@@ -41,13 +40,7 @@ func CreateCustomer(ctx echo.Context) error {
 // @Tags Customers
 // @Success 200
 func DeleteCustomer(ctx echo.Context) error {
-	id := ctx.Param("id")
-	claims := Token.ValidateToken(ctx.Request().Header.Get("Authorization"))
-	if claims.ID != id {
-		panic(ErrorModels.UnauthorizedRequest.SetPublicDetail("User cannot delete another user."))
-	}
 	return Redirection.Redirect(ctx, Constants.CustomerServiceUri)
-
 }
 
 // GetACustomer godoc
@@ -61,11 +54,6 @@ func DeleteCustomer(ctx echo.Context) error {
 // @Success 200 {object} Entities.Customer
 // @Param detail query bool false "Detailed Fields"
 func GetACustomer(ctx echo.Context) error {
-	id := ctx.Param("id")
-	claims := Token.ValidateToken(ctx.Request().Header.Get("Authorization"))
-	if claims.ID != id {
-		panic(ErrorModels.UnauthorizedRequest.SetPublicDetail("The user cannot request another user's data."))
-	}
 	return Redirection.Redirect(ctx, Constants.CustomerServiceUri)
 }
 
@@ -78,11 +66,7 @@ func GetACustomer(ctx echo.Context) error {
 // @Router /customers/{id} [put]
 // @Tags Customers
 // @Success 200
+// @Param Customer body RequestModels.UpdateCustomerDto true "Customer to update."
 func UpdateCustomer(ctx echo.Context) error {
-	id := ctx.Param("id")
-	claims := Token.ValidateToken(ctx.Request().Header.Get("Authorization"))
-	if claims.ID != id {
-		panic(ErrorModels.UnauthorizedRequest.SetPublicDetail("The user cannot update another user's data."))
-	}
 	return Redirection.Redirect(ctx, Constants.CustomerServiceUri)
 }
