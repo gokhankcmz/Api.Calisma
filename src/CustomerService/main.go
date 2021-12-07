@@ -3,6 +3,7 @@ package main
 import (
 	"Api.Calisma/src/Common/Logging/LogBody"
 	"Api.Calisma/src/Common/Middlewares"
+	"Api.Calisma/src/CustomerService/Constants"
 	"Api.Calisma/src/CustomerService/Handlers"
 	"Api.Calisma/src/CustomerService/Mongo"
 	CustomerRepository "Api.Calisma/src/CustomerService/Repository"
@@ -15,7 +16,7 @@ func main() {
 	e := echo.New()
 
 	//KafkaProducer.CreateProducer("localhost:9092")
-	LogBody.CreateStaticBody().AddApplicationInfo("CustomerService-Api").AddHostName()
+	LogBody.CreateStaticBody().AddApplicationInfo(Constants.ApplicationName).AddHostName()
 	Middlewares.UsePanicHandlerMiddleware(e)
 	Middlewares.UseLogrusRequestLogging(e)
 	repo := CustomerRepository.NewRepository(Mongo.GetMongoSingletonCollection())

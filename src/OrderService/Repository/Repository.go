@@ -53,7 +53,6 @@ func (r Repository) GetAllOrderIds() ([]string, int) {
 	return resp, len(resp)
 }
 func (r Repository) GetAllOrders() []EntityModels.Order {
-
 	collection := GetMongoSingletonCollection()
 	filter := bson.D{{}}
 	var results []EntityModels.Order

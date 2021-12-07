@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 )
 
@@ -18,7 +19,7 @@ import (
 type IRepository interface {
 	GetCustomer(ID string) EntityModels.Customer
 	GetAllCustomerIds() ([]string, int)
-	GetAllCustomers() ([]EntityModels.Customer, int)
+	GetCustomers(options *options.FindOptions, filter *bson.M) ([]EntityModels.Customer, int)
 	CreateCustomer(c *EntityModels.Customer) string
 	UpdateCustomer(c *EntityModels.Customer) *mongo.UpdateResult
 	DeleteCustomer(ID string) *mongo.DeleteResult
@@ -54,10 +55,9 @@ func (r Repository) GetAllCustomerIds() ([]string, int) {
 	return resp, len(resp)
 
 }
-func (r Repository) GetAllCustomers() ([]EntityModels.Customer, int) {
-	filter := bson.D{{}}
+func (r Repository) GetCustomers(options *options.FindOptions, filter *bson.M) ([]EntityModels.Customer, int) {
 	var results []EntityModels.Customer
-	cur, _ := r.mc.Find(context.Background(), filter)
+	cur, _ := r.mc.Find(context.Background(), filter, options)
 	defer cur.Close(context.Background())
 	cur.All(context.Background(), &results)
 	return results, len(results)
